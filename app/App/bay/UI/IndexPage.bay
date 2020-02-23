@@ -114,10 +114,26 @@ class IndexPage extends Component
 			%item{
 				padding: 10px;
 				cursor: pointer;
+				
 			}
 			%item.active{
 				background-color: blue;
 				color: white;
+			}
+			%item-content, %item %rm-button{
+				display: inline-block;
+				vertical-align: middle;
+			}
+			%item-content{
+				width: calc(100% - 80px);
+				padding-right: 5px;
+			}
+			%item %rm-button{
+				width: 80px;
+				text-align: right;
+			}
+			%item %rm-button button{
+				cursor: pointer;
 			}
 		}
 	;
@@ -129,7 +145,12 @@ class IndexPage extends Component
 	 */
 	lambda html render(LayoutModel layout, IndexPageModel model, Dict params, html content)
 	{
+		int index = model.selected_index;
 		Item edit_item = model.edit_item;
+		if (index < 0 or index >= model.items.count())
+		{
+			edit_item = null;
+		}
 		
 		return <div @class='content'>
 			
@@ -141,12 +162,17 @@ class IndexPage extends Component
 				{
 					model.items.map
 					(
-						html (Item item, int index) use (model) =>
+						html (Item item, int index) use (layout, model) =>
 							<div @class='item' class={ model.selected_index == index ? 'active' : '' } 
 								@key={ index } data-index={ index }
 								@event:MouseClickEvent='onItemClick'
 							>
-								{ item.name }
+								<div @class='item-content'>{ item.name }</div>
+								<div @class='rm-button'>
+									<button @event:MouseClickEvent='onRemoveClick' data-index={ index }>
+										Remove
+									</button>
+								</div>
 							</div>
 					)
 				}
@@ -252,7 +278,10 @@ class IndexPage extends Component
 	void onSaveClick(MouseClickEvent e)
 	{
 		int index = this.model.selected_index;
-		if (index == -1) return;
+		if (index < 0 or index >= this.model.items.count())
+		{
+			return;
+		}
 		
 		Item edit_item = this.model.edit_item;
 		this.updateModel
@@ -261,6 +290,24 @@ class IndexPage extends Component
 		};
 		
 		/* log(this.model.selected_index); */
+	}
+	
+	
+	
+	/**
+	 * On Remove
+	 */
+	void onRemoveClick(MouseClickEvent e)
+	{
+		e.cancel();
+		
+		int index = (int) e.target.@getAttribute("data-index");
+		if (index == -1) return;
+		
+		this.updateModel
+		{
+			"items": this.model.items.removeIm(index),
+		};
 	}
 	
 	#endif
