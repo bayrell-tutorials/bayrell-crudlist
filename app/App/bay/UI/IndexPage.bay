@@ -226,11 +226,11 @@ class IndexPage extends Component
 	{
 		if (this.model.edit_item == null) return;
 		
-		string index = e.target.@getAttribute("field_name");
+		string field_name = e.target.@getAttribute("field_name");
 		string value = e.value;
 		
 		Item edit_item = this.model.edit_item;
-		edit_item = edit_item.copy( (new Map()).set(index, value) );
+		edit_item = edit_item.copy( (new Map()).set(field_name, value) );
 		
 		this.updateModel
 		{
