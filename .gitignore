@@ -1,0 +1,6 @@
+/app/[^\\]*/es6
+/app/[^\\]*/nodejs
+/app/[^\\]*/php
+/compiler.new
+/node_modules
+/web/assets

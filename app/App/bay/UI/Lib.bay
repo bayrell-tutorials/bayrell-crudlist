@@ -1,0 +1,19 @@
+namespace App.UI;
+
+use Runtime.Web.RenderContainer;
+use App.UI.Layout;
+
+
+class Lib
+{
+	
+	/**
+	 * Layout chain
+	 */
+	public static string layoutChain(RenderContainer container, string layout_class)
+	{
+		if (container.layout.layout_name == "default") return classof Layout;
+		return "";
+	}
+	
+}

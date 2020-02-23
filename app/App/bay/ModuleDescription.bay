@@ -1,0 +1,82 @@
+namespace App;
+
+use Runtime.Annotations.Entity;
+use Runtime.Annotations.Provider;
+use Runtime.Annotations.LambdaChain;
+use Runtime.Annotations.LambdaChainDeclare;
+use Runtime.Interfaces.AssetsInterface;
+use Runtime.Interfaces.ContextInterface;
+use Runtime.Interfaces.ModuleDescriptionInterface;
+use Runtime.Web.RenderContainer;
+
+
+class ModuleDescription implements ModuleDescriptionInterface, AssetsInterface
+{
+	
+	/**
+	 * Returns module name
+	 * @return string
+	 */
+	lambda string getModuleName() => "App";
+	
+	
+	
+	/**
+	 * Returns module name
+	 * @return string
+	 */
+	lambda string getModuleVersion() => "0.0.1";
+	
+	
+	
+	/**
+	 * Returns required modules
+	 * @return Map<string>
+	 */
+	lambda Map<string> requiredModules() => 
+	{
+		"Runtime.Web": "*",
+	};
+	
+	
+	
+	/**
+	 * Returns module files load order
+	 * @return Collection<string>
+	 */
+	lambda Collection<string> assets() => 
+	[
+		'App/Model/IndexPageModel',
+		'App/Model/Item',
+		'App/UI/IndexPage',
+		'App/UI/Layout',
+		'App/UI/Lib',
+		'App/ModuleDescription',
+	];
+	
+	
+	
+	/**
+	 * Returns enities
+	 */
+	lambda Collection<Dict> entities() => 
+	[
+		/* Index page */
+		new Entity{ "name": "App.UI.IndexPage" },
+		
+		/* Layout chain */
+		new LambdaChain
+		{
+			"name": RenderContainer::LAYOUT_CHAIN,
+			"value": "App.UI.Lib::layoutChain",
+		},
+	];
+	
+	
+	
+	/**
+	 * Returns sync loaded files
+	 */		
+	public static Collection<string> resources() => null;	
+	
+}

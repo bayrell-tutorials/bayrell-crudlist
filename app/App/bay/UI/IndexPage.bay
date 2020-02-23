@@ -1,0 +1,268 @@
+namespace App.UI;
+
+use Runtime.MessageRPC;
+use Runtime.Web.Component;
+use Runtime.Web.LayoutModel;
+use Runtime.Web.RenderContainer;
+use Runtime.Web.RenderHelper;
+use Runtime.Web.Annotations.Route;
+use Runtime.Web.Annotations.RouteList;
+use Runtime.Web.Annotations.Template;
+use Runtime.Web.Events.Mouse.MouseClickEvent;
+use Runtime.Web.Events.User.ChangeEvent;
+use Runtime.Web.Button.Button;
+use Runtime.Web.Dialog.Dialog;
+use Runtime.Web.Dialog.DialogEvent;
+use Runtime.Web.Input.Input;
+use App.Model.IndexPageModel;
+use App.Model.Item;
+
+
+@RouteList{}
+@Template{ "model_name": classof IndexPageModel }
+class IndexPage extends Component
+{
+	Dialog dialog = null;
+	
+	
+	/**
+	 * Returns module name
+	 */
+	lambda string moduleName() => "App";
+	
+	
+	
+	/**
+	 * Route Action
+	 * @return WebContainer
+	 */
+	@Route{ "uri": "/" }
+	static async RenderContainer IndexPage(RenderContainer container)
+	{
+		IndexPageModel model = new IndexPageModel
+		{
+			"content": "Hello world",
+			"items": 
+			[
+				new Item { "name": "Item1" },
+				new Item { "name": "Item2" },
+				new Item { "name": "Item3" },
+			],
+		};
+		
+		/* Set title */
+		container <= layout <= title <= "Hello world !!!";
+		
+		/* Create model */
+		container <= layout <= page_class <= classof IndexPage;
+		container <= layout <= page_model <= model;
+		
+		return container;
+	}
+	
+	
+	
+	/**
+	 * Returns required components
+	 */
+	lambda Collection<string> components() =>
+	[
+		classof Dialog,
+		classof Button,
+		classof Input,
+	];
+	
+	
+	
+	/**
+	 * Component css
+	 */
+	lambda string css(Dict<string> vars) =>
+		@css{
+			%content{
+				text-align: center;
+				padding-top: 20px;
+			}
+			%menu{
+				padding-bottom: 10px;
+			}
+			%list, %info{
+				display: inline-block;
+				vertical-align: top;
+				text-align: left;
+			}
+			%list{
+				width: 50%;
+				padding-right: 10px;
+			}
+			%info{
+				width: 50%;
+				padding-left: 10px;
+			}
+			%info_buttons{
+				padding-top: 5px;
+				text-align: center;
+			}
+			%field_label{
+				font-weight: bold;
+				padding-bottom: 5px;
+			}
+			%input{
+				width: 100%;
+				padding: 6px 12px;
+			}
+			%item{
+				padding: 10px;
+				cursor: pointer;
+			}
+			%item.active{
+				background-color: blue;
+				color: white;
+			}
+		}
+	;
+	
+	
+	
+	/**
+	 * Component render
+	 */
+	lambda html render(LayoutModel layout, IndexPageModel model, Dict params, html content)
+	{
+		Item edit_item = model.edit_item;
+		
+		return <div @class='content'>
+			
+			<div @class='menu'>
+				<Button @event:MouseClickEvent='onAddClick'>Add</Button>
+			</div>
+			
+			<div @class='list'>
+				{
+					model.items.map
+					(
+						html (Item item, int index) use (model) =>
+							<div @class='item' class={ model.selected_index == index ? 'active' : '' } 
+								@key={ index } data-index={ index }
+								@event:MouseClickEvent='onItemClick'
+							>
+								{ item.name }
+							</div>
+					)
+				}
+			</div>
+			
+			<div @class='info'>
+				<div @class='field'>
+					<div @class='field_label'>Name</div>
+					<div @class='field_edit'>
+						<input field_name='name' @event:ChangeEvent='onInputChange' 
+							@model={ edit_item != null ? edit_item.name : "" }
+							attrs=@json{  {"field_name": "name"}  } @class='input'
+							/>
+					</div>
+				</div>
+				<div @class='info_buttons'>
+					<Button @event:MouseClickEvent='onSaveClick'>Save</Button>
+				</div>
+			</div>
+			
+			<Dialog @bind="dialog" @ref="dialog" style="promt" 
+				@event:DialogEvent="onDialogEvent"
+			/>
+			
+		</div>
+		
+	}
+	
+	
+	
+	#ifdef FRONTEND then
+	
+	
+	/**
+	 * Add click
+	 */
+	void onAddClick(MouseClickEvent e)
+	{
+		this.dialog.show
+		{
+			"title": "Add new item",
+		};
+	}
+	
+	
+	
+	/**
+	 * Input change
+	 */
+	void onInputChange(ChangeEvent e)
+	{
+		if (this.model.edit_item == null) return;
+		
+		string index = e.target.@getAttribute("field_name");
+		string value = e.value;
+		
+		Item edit_item = this.model.edit_item;
+		edit_item = edit_item.copy( (new Map()).set(index, value) );
+		
+		this.updateModel
+		{
+			"edit_item": edit_item
+		};
+		
+		/* log(this.model.selected_index); */
+	}
+	
+	
+	
+	/**
+	 * Dialog event
+	 */
+	void onDialogEvent(DialogEvent e)
+	{
+		this.updateModel
+		{
+			"items": this.model.items.pushIm( new Item { "name": e.input } )
+		};
+	}
+	
+	
+	
+	/**
+	 * On item click
+	 */
+	void onItemClick(MouseClickEvent e)
+	{
+		string index = e.target.@getAttribute("data-index");
+		
+		/* log(this.model.items[0]); */
+		
+		this.updateModel
+		{
+			"selected_index": (int)index,
+			"edit_item": this.model.items.get(index, null),
+		};
+	}
+	
+	
+	/**
+	 * OnSave
+	 */
+	void onSaveClick(MouseClickEvent e)
+	{
+		int index = this.model.selected_index;
+		if (index == -1) return;
+		
+		Item edit_item = this.model.edit_item;
+		this.updateModel
+		{
+			"items": this.model.items.setIm(index, edit_item),
+		};
+		
+		/* log(this.model.selected_index); */
+	}
+	
+	#endif
+	
+}

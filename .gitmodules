@@ -1,0 +1,15 @@
+[submodule "lib/Runtime"]
+	path = lib/Runtime
+	url = https://github.com/bayrell/Runtime
+[submodule "lib/Runtime.Web"]
+	path = lib/Runtime.Web
+	url = https://github.com/bayrell/Runtime.Web
+[submodule "lib/Runtime.Web.Dialog"]
+	path = lib/Runtime.Web.Dialog
+	url = https://github.com/bayrell/Runtime.Web.Dialog
+[submodule "lib/Runtime.Web.Button"]
+	path = lib/Runtime.Web.Button
+	url = https://github.com/bayrell/Runtime.Web.Button
+[submodule "lib/Runtime.Web.Input"]
+	path = lib/Runtime.Web.Input
+	url = https://github.com/bayrell/Runtime.Web.Input
