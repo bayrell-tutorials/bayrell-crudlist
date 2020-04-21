@@ -15,21 +15,21 @@ class Layout extends Component
 	/**
 	 * Returns module name
 	 */
-	lambda string moduleName() => "App";
+	pure string moduleName() => "App";
 	
 	
 	
 	/**
 	 * Required components
 	 */
-	lambda Collection<string> components() => null;
+	pure Collection<string> components() => null;
 	
 	
 	
 	/**
 	 * Component css
 	 */
-	lambda string css(Dict<string> vars) => 
+	pure string css(Dict<string> vars) => 
 		@css{
 			*{box-sizing: border-box;}body{margin:0;padding:0;}
 			a { text-decoration: inherit; color: #0000d0; cursor: pointer; }
@@ -58,7 +58,7 @@ class Layout extends Component
 	/**
 	 * Component render
 	 */
-	lambda html render(LayoutModel layout, LayoutModel model, Dict params, html content)
+	pure html render(LayoutModel layout, LayoutModel model, Dict params, html content)
 	{
 		string class_name = model.page_class;
 		return

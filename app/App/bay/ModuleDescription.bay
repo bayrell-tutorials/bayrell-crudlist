@@ -17,7 +17,7 @@ class ModuleDescription implements ModuleDescriptionInterface, AssetsInterface
 	 * Returns module name
 	 * @return string
 	 */
-	lambda string getModuleName() => "App";
+	pure string getModuleName() => "App";
 	
 	
 	
@@ -25,7 +25,7 @@ class ModuleDescription implements ModuleDescriptionInterface, AssetsInterface
 	 * Returns module name
 	 * @return string
 	 */
-	lambda string getModuleVersion() => "0.0.1";
+	pure string getModuleVersion() => "0.0.1";
 	
 	
 	
@@ -33,7 +33,7 @@ class ModuleDescription implements ModuleDescriptionInterface, AssetsInterface
 	 * Returns required modules
 	 * @return Map<string>
 	 */
-	lambda Map<string> requiredModules() => 
+	pure Map<string> requiredModules() => 
 	{
 		"Runtime.Web": "*",
 	};
@@ -44,7 +44,7 @@ class ModuleDescription implements ModuleDescriptionInterface, AssetsInterface
 	 * Returns module files load order
 	 * @return Collection<string>
 	 */
-	lambda Collection<string> assets() => 
+	pure Collection<string> assets() => 
 	[
 		'App/Model/IndexPageModel',
 		'App/Model/Item',
@@ -59,7 +59,7 @@ class ModuleDescription implements ModuleDescriptionInterface, AssetsInterface
 	/**
 	 * Returns enities
 	 */
-	lambda Collection<Dict> entities() => 
+	pure Collection<Dict> entities() => 
 	[
 		/* Index page */
 		new Entity{ "name": "App.UI.IndexPage" },

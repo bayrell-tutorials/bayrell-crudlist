@@ -17,6 +17,6 @@ struct IndexPageModel extends CoreStruct
 	/**
 	 * Return selected item
 	 */
-	lambda Item getSelectedItem(IndexPageModel model) => model.items.get(model.selected_index, null);
+	pure Item getSelectedItem(IndexPageModel model) => model.items.get(model.selected_index, null);
 	
 }

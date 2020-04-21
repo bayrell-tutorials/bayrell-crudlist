@@ -17,7 +17,7 @@ struct AppServer extends Context
 	/**
 	 * Returns app name
 	 */
-	lambda string appName() => "App";
+	pure string appName() => "App";
 	
 	
 	
@@ -105,7 +105,7 @@ struct AppServer extends Context
 		};
 		
 		/* Render route */
-		container = await static::chainAwait(c, RenderContainer::RENDER_CHAIN, [ container ]);
+		container = c -> await method chainAwait(RenderContainer::RENDER_CHAIN, [ container ]);
 		
 		/* Result */
 		return container;
